@@ -32,6 +32,27 @@ export interface Database {
           }
         ]
       }
+      defaultsongs: {
+        Row: {
+          created_at: string
+          id: number
+          song_path: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          song_path: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          song_path?: string
+          title?: string
+        }
+        Relationships: []
+      }
       prices: {
         Row: {
           active: boolean | null
