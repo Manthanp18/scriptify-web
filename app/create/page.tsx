@@ -1,10 +1,17 @@
 import AudioCard from '@/components/AudioCard';
 import { getSongs } from '@/utils/songs-services';
+import { getSession } from '../supabase-server';
+import { redirect } from 'next/navigation';
 
 // pages/create.js
 export default async function Create() {
   const songs = await getSongs();
-  console.log({ songs });
+  const session = await getSession();
+
+  if (!session) {
+    return redirect('/signin');
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <div className="container mx-auto bg-white rounded-lg shadow px-8 py-12">

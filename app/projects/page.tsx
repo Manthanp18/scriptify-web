@@ -1,14 +1,13 @@
-// // pages/index.js or a specific component file
-'use client';
+import { getSession } from '../supabase-server';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { useRouter } from 'next/navigation';
+const ProjectPage = async () => {
+  const session = await getSession();
 
-export default function ProjectPage() {
-  const router = useRouter();
-  const handleCreateVideo = () => {
-    // Navigate to the /create page
-    router.push('/create');
-  };
+  if (!session) {
+    return redirect('/signin');
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       {/* Card */}
@@ -35,26 +34,16 @@ export default function ProjectPage() {
         </p>
 
         {/* Button */}
-        <button
+        <Link
+          href="/create"
           className="bg-green-500 text-white px-6 py-2 rounded-full inline-flex items-center"
-          onClick={handleCreateVideo}
         >
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M12 4v16m8-8H4"></path>
-          </svg>
           Create video
-        </button>
+        </Link>
 
         <p className="text-gray-500 mt-4">press Enter ↵</p>
       </div>
     </div>
   );
-}
+};
+export default ProjectPage;
