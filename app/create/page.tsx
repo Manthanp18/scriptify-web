@@ -1,5 +1,14 @@
+import { getSession } from '../supabase-server';
+import { redirect } from 'next/navigation';
+
 // pages/create.js
-export default function Create() {
+export default async function Create() {
+  const session = await getSession();
+
+  if (!session) {
+    return redirect('/signin');
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <div className="container mx-auto bg-white rounded-lg shadow px-8 py-12">
