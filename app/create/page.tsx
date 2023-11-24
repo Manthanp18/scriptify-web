@@ -1,5 +1,10 @@
+import AudioCard from '@/components/AudioCard';
+import { getSongs } from '@/utils/songs-services';
+
 // pages/create.js
-export default function Create() {
+export default async function Create() {
+  const songs = await getSongs();
+  console.log({ songs });
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <div className="container mx-auto bg-white rounded-lg shadow px-8 py-12">
@@ -41,31 +46,8 @@ export default function Create() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Audio selection cards */}
-              {['Stomp', 'Motion', 'Drops', 'Claps'].map((track, index) => (
-                <div
-                  key={index}
-                  className="border rounded-lg p-4 flex flex-col items-stretch"
-                >
-                  <input
-                    type="radio"
-                    name="audioTrack"
-                    id={`track-${index}`}
-                    className="hidden"
-                  />
-                  <label htmlFor={`track-${index}`} className="cursor-pointer">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">{track}</span>
-                      <span className="text-xs text-gray-500">0:25</span>
-                    </div>
-                    <div className="relative">
-                      <audio controls className="w-full">
-                        {/* Source should be the URL to the audio file */}
-                        <source src="/path/to/audio.mp3" type="audio/mpeg" />
-                        Your browser does not support the audio element.
-                      </audio>
-                    </div>
-                  </label>
-                </div>
+              {songs.map((song) => (
+                <AudioCard songs={song} key={song.id} />
               ))}
             </div>
           </div>
