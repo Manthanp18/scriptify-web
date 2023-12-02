@@ -1,16 +1,40 @@
+'use client';
+
+import { getSession } from '../supabase-server';
 import AudioCard from '@/components/AudioCard';
 import { getSongs } from '@/utils/songs-services';
-import { getSession } from '../supabase-server';
-import { redirect } from 'next/navigation';
+import { Song } from '@/utils/types';
+import { redirect, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 // pages/create.js
-export default async function Create() {
-  const songs = await getSongs();
-  const session = await getSession();
+export default function Create() {
+  const [selectedAudio, setSelectedAudio] = useState<string>('');
+  const [songs, setSong] = useState<Song[]>();
+  const [videoText, setVideoText] = useState('');
 
-  if (!session) {
-    return redirect('/signin');
-  }
+  const router = useRouter();
+  useEffect(() => {
+    const fetchSongUrl = async () => {
+      const songs = await getSongs();
+      setSong(songs);
+    };
+
+    fetchSongUrl();
+  }, []);
+
+  const handleAudioSelect = (url: any) => {
+    setSelectedAudio(url);
+  };
+
+  console.log('mm', selectedAudio);
+
+  const handleSubmit = () => {
+    localStorage.setItem('videoText', videoText);
+    localStorage.setItem('selectedAudio', selectedAudio);
+    // Navigate to the editor page
+    router.push('/editor');
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
@@ -37,6 +61,8 @@ export default async function Create() {
             <textarea
               className="w-full p-4 text-gray-700 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="Type your video script here..."
+              value={videoText}
+              onChange={(e) => setVideoText(e.target.value)}
             ></textarea>
             <p className="text-gray-600 text-xs mt-2">
               Tip: use short, punctuated sentences.
@@ -53,8 +79,13 @@ export default async function Create() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Audio selection cards */}
-              {songs.map((song) => (
-                <AudioCard songs={song} key={song.id} />
+              {songs?.map((song) => (
+                <AudioCard
+                  songs={song}
+                  key={song.id}
+                  handleAudioSelect={handleAudioSelect}
+                  isSelected={selectedAudio === song.songURL}
+                />
               ))}
             </div>
           </div>
@@ -62,7 +93,10 @@ export default async function Create() {
           {/* Step 3: Generate Video Button */}
           <div className="flex justify-between items-center mt-6">
             <button className="text-blue-600">More sounds</button>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold">
+            <button
+              className="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold"
+              onClick={handleSubmit}
+            >
               Generate video
             </button>
           </div>

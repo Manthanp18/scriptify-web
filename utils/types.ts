@@ -3,4 +3,5 @@ export interface Song {
   id: number;
   song_path: string;
   title: string;
+  songURL: string;
 }
